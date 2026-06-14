@@ -24,6 +24,7 @@ GameState="*res://autoloads/GameState.gd"
 PartCatalog="*res://autoloads/PartCatalog.gd"
 TimeManager="*res://autoloads/TimeManager.gd"
 PartSystem="*res://scripts/systems/PartSystem.gd"
+PartVisuals="*res://scripts/vehicles/PartVisuals.gd"
 
 [display]
 

@@ -14,32 +14,11 @@ const PART_TO_GROUPS := {
 	"front_subframe": ["E36_subframe_F"],
 }
 
-# Group prefixes hidden on load. Includes the outer body skin + glass + trim
-# (so the engine bay and underbody are accessible) and the drivetrain parts
-# that are installed through gameplay. Wheels/brakes stay visible so the car
-# still sits on its wheels.
+# Group prefixes hidden on load — only the gameplay parts that are installed
+# through the build-up loop. The body/glass/interior stay so it still reads as
+# a car. (The outer skin is one welded group in this model, so the hood can't
+# be popped independently; access to a covered bay is handled separately.)
 const HIDDEN_AT_START := [
-	# Outer body skin (hood/roof/fenders/quarters all live under this group)
-	"E36_coupe_bumper",
-	"E36_coupe_fender",
-	"E36_coupe_grille",
-	"E36_coupe_headlight",
-	"E36_taillight",
-	"E36_coupe_hood_logo",
-	"E36_coupe_trunk",
-	"E36_coupe_panels",
-	# Glass
-	"E36_coupe_windshield",
-	"E36_coupe_sideglass",
-	"E36_coupe_doorglass",
-	"E36_coupe_backlight",
-	"E36_coupe_sunroof",
-	# Wipers / mirrors / door cards
-	"E36_coupe_wipers",
-	"E36_coupe_washers",
-	"E36_coupe_intmirror",
-	"E36_coupe_doorpanel",
-	# Drivetrain parts revealed through install
 	"E36_coupe_engine_m51",
 	"E36_coupe_transmission",
 	"E36_subframe_F",

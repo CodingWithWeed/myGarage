@@ -11,6 +11,8 @@ var is_installed: bool = false
 var _original_collision_layer: int = 0
 var _original_collision_mask: int = 0
 var _material: StandardMaterial3D = null
+var _visual_meshes: Array[MeshInstance3D] = []
+var _highlight_overlay: StandardMaterial3D = null
 
 const CATEGORY_COLORS := {
 	"engine": Color(0.8, 0.2, 0.1),
@@ -54,6 +56,17 @@ func _apply_category_material() -> void:
 	var color: Color = CATEGORY_COLORS.get(category, Color(0.5, 0.5, 0.5))
 	var size: Vector3 = CATEGORY_BOX_SIZE.get(category, Vector3(0.2, 0.2, 0.2))
 
+	# Prefer the real model geometry; fall back to a coloured box.
+	if PartVisuals.has_visual(part_id):
+		var visual := PartVisuals.make_visual(part_id)
+		if visual != null:
+			var box_node := get_node_or_null("MeshInstance3D")
+			if box_node is MeshInstance3D:
+				(box_node as MeshInstance3D).visible = false
+			add_child(visual)
+			_collect_visual_meshes(visual)
+			return
+
 	var mesh_node := get_node_or_null("MeshInstance3D")
 	if mesh_node is MeshInstance3D:
 		var box := BoxMesh.new()
@@ -71,13 +84,30 @@ func _apply_category_material() -> void:
 		shape.size = size
 		col_node.shape = shape
 
+func _collect_visual_meshes(node: Node) -> void:
+	if node is MeshInstance3D:
+		_visual_meshes.append(node as MeshInstance3D)
+	for c in node.get_children():
+		_collect_visual_meshes(c)
+
 func set_highlighted(on: bool) -> void:
-	if _material == null:
-		return
-	_material.emission_enabled = on
-	if on:
-		_material.emission = _material.albedo_color.lightened(0.5)
-		_material.emission_energy_multiplier = 0.6
+	# Box parts glow via their own material; real-mesh parts use a per-instance
+	# overlay so the shared model materials aren't affected.
+	if _material != null:
+		_material.emission_enabled = on
+		if on:
+			_material.emission = _material.albedo_color.lightened(0.5)
+			_material.emission_energy_multiplier = 0.6
+	if not _visual_meshes.is_empty():
+		if on and _highlight_overlay == null:
+			_highlight_overlay = StandardMaterial3D.new()
+			_highlight_overlay.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			_highlight_overlay.albedo_color = Color(1.0, 1.0, 0.7, 0.18)
+			_highlight_overlay.emission_enabled = true
+			_highlight_overlay.emission = Color(1.0, 0.95, 0.5)
+			_highlight_overlay.emission_energy_multiplier = 0.4
+		for m in _visual_meshes:
+			m.material_overlay = _highlight_overlay if on else null
 
 func pick_up() -> void:
 	set_highlighted(false)
