@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/systems/CustomerSpawner.gd" id="1_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/vehicles/e36/E36_Car.tscn" id="3_e36"]
 [ext_resource type="PackedScene" path="res://scenes/world/PartStorage.tscn" id="4_storage"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://scenes/world/Garage.tscn" id="6_garage"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_1"]
 sky_top_color = Color(0.4, 0.55, 0.7, 1)
@@ -64,7 +65,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 0)
 [node name="E36_Car" parent="." instance=ExtResource("3_e36")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
+[node name="Garage" parent="." instance=ExtResource("6_garage")]
+
 [node name="PartStorage" parent="." instance=ExtResource("4_storage")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, -4)
 
 [node name="HUD" parent="." instance=ExtResource("5_hud")]
