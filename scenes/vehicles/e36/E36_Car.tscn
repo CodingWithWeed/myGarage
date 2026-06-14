@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/bmw_3-series_e36_street/scene.gltf" id="1_model"]
+[ext_resource type="Script" path="res://scripts/vehicles/CarModel.gd" id="2_carmodel"]
+[ext_resource type="Script" path="res://scripts/base_classes/InstallSlot.gd" id="3_slot"]
+[ext_resource type="Script" path="res://scripts/systems/AssemblyValidator.gd" id="4_validator"]
+
+[node name="E36_Car" type="Node3D"]
+script = ExtResource("2_carmodel")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="AssemblyValidator" type="Node" parent="."]
+script = ExtResource("4_validator")
+
+[node name="Slots" type="Node3D" parent="."]
+
+[node name="engine_block_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 1.3)
+script = ExtResource("3_slot")
+slot_id = "engine_block_slot"
+accepted_part_id = "engine_block"
+use_model_reveal = true
+interaction_hint = "Engine Slot"
+
+[node name="gearbox_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.4)
+script = ExtResource("3_slot")
+slot_id = "gearbox_slot"
+accepted_part_id = "gearbox"
+use_model_reveal = true
+interaction_hint = "Gearbox Slot"
+
+[node name="front_subframe_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 1.4)
+script = ExtResource("3_slot")
+slot_id = "front_subframe_slot"
+accepted_part_id = "front_subframe"
+use_model_reveal = true
+interaction_hint = "Front Subframe Slot"

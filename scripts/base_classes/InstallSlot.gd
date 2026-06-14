@@ -4,6 +4,9 @@ class_name InstallSlot
 @export var slot_id: String = ""
 @export var accepted_part_id: String = ""
 @export var dependency_slot_ids: Array[String] = []
+# When true, the installed part's appearance is the real model mesh (revealed
+# by CarModel via EventBus) rather than the carried physics node snapping in.
+@export var use_model_reveal: bool = false
 
 var is_filled: bool = false
 var installed_part_id: String = ""
@@ -135,20 +138,30 @@ func interact(player: Node) -> void:
 
 	if is_filled:
 		if inv.held_item_id == "":
-			var node := _installed_node
-			var removed_id := remove_part()
-			if node:
-				node.pick_up()
+			if use_model_reveal:
+				var removed_id := remove_part()
 				inv.pick_up(removed_id)
-				handler.attach_part_to_hand(node)
+				handler.spawn_and_hold(removed_id)
+			else:
+				var node := _installed_node
+				var removed_id := remove_part()
+				if node:
+					node.pick_up()
+					inv.pick_up(removed_id)
+					handler.attach_part_to_hand(node)
 			interacted.emit(player)
 	else:
 		var held_id := inv.held_item_id
 		if held_id == accepted_part_id and _deps_met():
-			var node: CarPartNode3D = handler.held_node
-			handler.release_held_for_slot()
-			inv.drop_held()
-			install_part(held_id, node)
+			if use_model_reveal:
+				handler.consume_held_node()
+				inv.drop_held()
+				install_part(held_id, null)
+			else:
+				var node: CarPartNode3D = handler.held_node
+				handler.release_held_for_slot()
+				inv.drop_held()
+				install_part(held_id, node)
 			interacted.emit(player)
 
 func set_hint_context(player: Node) -> void:
