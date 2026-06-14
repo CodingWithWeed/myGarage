@@ -14,7 +14,7 @@ config/name="myGarage"
 config/description="A first-person open-world car repair game inspired by My Summer Car"
 config/version="0.1.0"
 run/main_scene="res://scenes/world/World.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 
 [autoload]
 
@@ -23,6 +23,7 @@ Economy="*res://autoloads/Economy.gd"
 GameState="*res://autoloads/GameState.gd"
 PartCatalog="*res://autoloads/PartCatalog.gd"
 TimeManager="*res://autoloads/TimeManager.gd"
+PartSystem="*res://scripts/systems/PartSystem.gd"
 
 [display]
 

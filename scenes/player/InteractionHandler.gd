@@ -7,13 +7,18 @@ signal interaction_hint_changed(hint: String)
 @export var inventory: NodePath
 
 var current_interactable: Interactable = null
+var held_node: CarPartNode3D = null
 var _player: Node = null
+var _last_hint: String = ""
+
+const GENERIC_PART_SCENE := "res://scenes/parts/CarPart_Generic.tscn"
 
 func _ready() -> void:
 	_player = get_parent()
 
 func _process(_delta: float) -> void:
 	_update_interactable()
+	_update_hint()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") and current_interactable != null:
@@ -37,26 +42,79 @@ func _update_interactable() -> void:
 	current_interactable = found
 	if current_interactable:
 		current_interactable.on_highlight()
-		interaction_hint_changed.emit(current_interactable.get_interaction_hint())
-	else:
-		interaction_hint_changed.emit("")
+
+func _update_hint() -> void:
+	if current_interactable == null:
+		if _last_hint != "":
+			_last_hint = ""
+			interaction_hint_changed.emit("")
+		return
+	if current_interactable.has_method("set_hint_context"):
+		current_interactable.set_hint_context(_player)
+	var new_hint := current_interactable.get_interaction_hint()
+	if new_hint != _last_hint:
+		_last_hint = new_hint
+		interaction_hint_changed.emit(new_hint)
 
 func _find_interactable(node: Node) -> Interactable:
+	# Check the hit node itself
 	if node is Interactable:
 		return node as Interactable
-	var parent := node.get_parent()
-	while parent:
-		if parent is Interactable:
-			return parent as Interactable
-		parent = parent.get_parent()
+	# Check hit node's children for a "Pickup" interactable (CarPartNode3D pattern)
+	var pickup := node.get_node_or_null("Pickup")
+	if pickup is Interactable:
+		return pickup as Interactable
+	# Walk up parent chain
+	var current := node.get_parent()
+	while current:
+		if current is Interactable:
+			return current as Interactable
+		var p := current.get_node_or_null("Pickup")
+		if p is Interactable:
+			return p as Interactable
+		current = current.get_parent()
 	return null
 
+func attach_part_to_hand(node: CarPartNode3D) -> void:
+	held_node = node
+	var hand := _player.get_node_or_null("Head/HandAttachPoint")
+	if hand:
+		node.reparent(hand, false)
+		node.transform = Transform3D.IDENTITY
+
+func release_held_node() -> void:
+	if held_node == null:
+		return
+	var world := get_tree().current_scene
+	held_node.reparent(world, true)
+	held_node = null
+
+func consume_held_node() -> void:
+	if held_node == null:
+		return
+	held_node.queue_free()
+	held_node = null
+
+func spawn_and_hold(part_id: String) -> void:
+	var scene: PackedScene = load(GENERIC_PART_SCENE)
+	if scene == null:
+		push_error("CarPart_Generic.tscn not found")
+		return
+	var node: CarPartNode3D = scene.instantiate()
+	node.part_id = part_id
+	get_tree().current_scene.add_child(node)
+	node.pick_up()
+	attach_part_to_hand(node)
+
 func _drop_held_item(inv: Node) -> void:
+	if held_node == null:
+		return
 	var part_id := inv.drop_held()
 	if part_id == "":
 		return
-	# Spawn a physical part node in front of the player
-	# (placeholder — actual part scene instantiation added in Phase 1)
 	var drop_pos := _player.global_position + _player.global_transform.basis.z * -1.5
 	drop_pos.y += 0.5
-	# TODO: instance the part's scene and call .drop(drop_pos)
+	var world := get_tree().current_scene
+	held_node.reparent(world, true)
+	held_node.drop(drop_pos, _player.global_transform.basis.z * -2.0)
+	held_node = null

@@ -1,0 +1,105 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/parts/CarPart_Generic.tscn" id="1_part"]
+
+[sub_resource type="BoxMesh" id="ShelfMesh_1"]
+size = Vector3(2.2, 0.05, 0.55)
+
+[sub_resource type="BoxShape3D" id="ShelfShape_1"]
+size = Vector3(2.2, 0.05, 0.55)
+
+[sub_resource type="BoxMesh" id="ShelfMesh_2"]
+size = Vector3(2.2, 0.05, 0.55)
+
+[sub_resource type="BoxShape3D" id="ShelfShape_2"]
+size = Vector3(2.2, 0.05, 0.55)
+
+[sub_resource type="BoxMesh" id="LegMesh"]
+size = Vector3(0.05, 1.8, 0.05)
+
+[sub_resource type="BoxShape3D" id="BackShape"]
+size = Vector3(2.2, 1.8, 0.05)
+
+[node name="StorageShelf" type="Node3D"]
+
+[node name="LegFL" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0.9, 0.25)
+mesh = SubResource("LegMesh")
+
+[node name="LegFR" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, 0.9, 0.25)
+mesh = SubResource("LegMesh")
+
+[node name="LegBL" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0.9, -0.25)
+mesh = SubResource("LegMesh")
+
+[node name="LegBR" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, 0.9, -0.25)
+mesh = SubResource("LegMesh")
+
+[node name="ShelfBottom" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="ShelfBottom"]
+mesh = SubResource("ShelfMesh_1")
+
+[node name="Collision" type="CollisionShape3D" parent="ShelfBottom"]
+shape = SubResource("ShelfShape_1")
+
+[node name="ShelfTop" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="ShelfTop"]
+mesh = SubResource("ShelfMesh_2")
+
+[node name="Collision" type="CollisionShape3D" parent="ShelfTop"]
+shape = SubResource("ShelfShape_2")
+
+[node name="BackWall" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.3)
+
+[node name="Collision" type="CollisionShape3D" parent="BackWall"]
+shape = SubResource("BackShape")
+
+[node name="Parts" type="Node3D" parent="."]
+
+[node name="engine_block" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.58, 0)
+part_id = "engine_block"
+
+[node name="cylinder_head" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.58, 0)
+part_id = "cylinder_head"
+
+[node name="oil_pan" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0.58, 0)
+part_id = "oil_pan"
+
+[node name="battery" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.58, 0)
+part_id = "battery"
+
+[node name="front_subframe" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0.58, 0)
+part_id = "front_subframe"
+
+[node name="gearbox" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 1.28, 0)
+part_id = "gearbox"
+
+[node name="head_gasket" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 1.28, 0)
+part_id = "head_gasket"
+
+[node name="timing_chain" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 1.28, 0)
+part_id = "timing_chain"
+
+[node name="radiator" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1.28, 0)
+part_id = "radiator"
+
+[node name="ecu" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 1.28, 0)
+part_id = "ecu"

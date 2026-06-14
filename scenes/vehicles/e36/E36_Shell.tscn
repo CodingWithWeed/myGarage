@@ -1,0 +1,429 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/base_classes/InstallSlot.gd" id="1_slot"]
+[ext_resource type="Script" path="res://scripts/systems/AssemblyValidator.gd" id="2_validator"]
+
+[sub_resource type="BoxMesh" id="BodyMesh"]
+size = Vector3(1.7, 1.4, 4.4)
+
+[sub_resource type="BoxShape3D" id="BodyShape"]
+size = Vector3(1.7, 1.4, 4.4)
+
+[sub_resource type="BoxMesh" id="EngBayMesh"]
+size = Vector3(1.5, 0.9, 1.0)
+
+[sub_resource type="BoxShape3D" id="EngBayShape"]
+size = Vector3(1.5, 0.9, 1.0)
+
+[node name="E36_Shell" type="Node3D"]
+
+[node name="AssemblyValidator" type="Node" parent="."]
+script = ExtResource("2_validator")
+
+[node name="Body" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+collision_layer = 1
+
+[node name="BodyMesh" type="MeshInstance3D" parent="Body"]
+mesh = SubResource("BodyMesh")
+
+[node name="BodyCollision" type="CollisionShape3D" parent="Body"]
+shape = SubResource("BodyShape")
+
+[node name="EngineBay" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -2.7)
+collision_layer = 1
+
+[node name="EngBayMesh" type="MeshInstance3D" parent="EngineBay"]
+mesh = SubResource("EngBayMesh")
+
+[node name="EngBayCollision" type="CollisionShape3D" parent="EngineBay"]
+shape = SubResource("EngBayShape")
+
+[node name="EngineSlots" type="Node3D" parent="."]
+
+[node name="engine_block_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -2.3)
+script = ExtResource("1_slot")
+slot_id = "engine_block_slot"
+accepted_part_id = "engine_block"
+dependency_slot_ids = Array[String]([])
+interaction_hint = "Engine Block Slot"
+
+[node name="crankshaft_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -2.3)
+script = ExtResource("1_slot")
+slot_id = "crankshaft_slot"
+accepted_part_id = "crankshaft"
+dependency_slot_ids = Array[String](["engine_block_slot"])
+interaction_hint = "Crankshaft Slot"
+
+[node name="main_bearings_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.1, -2.3)
+script = ExtResource("1_slot")
+slot_id = "main_bearings_slot"
+accepted_part_id = "main_bearings"
+dependency_slot_ids = Array[String](["crankshaft_slot"])
+interaction_hint = "Main Bearings Slot"
+
+[node name="oil_pump_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.15, -2.3)
+script = ExtResource("1_slot")
+slot_id = "oil_pump_slot"
+accepted_part_id = "oil_pump"
+dependency_slot_ids = Array[String](["engine_block_slot"])
+interaction_hint = "Oil Pump Slot"
+
+[node name="oil_pan_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, -2.3)
+script = ExtResource("1_slot")
+slot_id = "oil_pan_slot"
+accepted_part_id = "oil_pan"
+dependency_slot_ids = Array[String](["oil_pump_slot"])
+interaction_hint = "Oil Pan Slot"
+
+[node name="oil_drain_plug_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, -0.45, -2.2)
+script = ExtResource("1_slot")
+slot_id = "oil_drain_plug_slot"
+accepted_part_id = "oil_drain_plug"
+dependency_slot_ids = Array[String](["oil_pan_slot"])
+interaction_hint = "Oil Drain Plug Slot"
+
+[node name="oil_filter_housing_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.1, -2.4)
+script = ExtResource("1_slot")
+slot_id = "oil_filter_housing_slot"
+accepted_part_id = "oil_filter_housing"
+dependency_slot_ids = Array[String](["engine_block_slot"])
+interaction_hint = "Oil Filter Housing Slot"
+
+[node name="oil_filter_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.52, 0.1, -2.4)
+script = ExtResource("1_slot")
+slot_id = "oil_filter_slot"
+accepted_part_id = "oil_filter"
+dependency_slot_ids = Array[String](["oil_filter_housing_slot"])
+interaction_hint = "Oil Filter Slot"
+
+[node name="engine_oil_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.75, -2.25)
+script = ExtResource("1_slot")
+slot_id = "engine_oil_slot"
+accepted_part_id = "engine_oil_5l"
+dependency_slot_ids = Array[String](["oil_filter_slot", "oil_drain_plug_slot"])
+interaction_hint = "Engine Oil Fill"
+
+[node name="head_gasket_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -2.3)
+script = ExtResource("1_slot")
+slot_id = "head_gasket_slot"
+accepted_part_id = "head_gasket"
+dependency_slot_ids = Array[String](["engine_block_slot"])
+interaction_hint = "Head Gasket Slot"
+
+[node name="cylinder_head_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -2.3)
+script = ExtResource("1_slot")
+slot_id = "cylinder_head_slot"
+accepted_part_id = "cylinder_head"
+dependency_slot_ids = Array[String](["head_gasket_slot"])
+interaction_hint = "Cylinder Head Slot"
+
+[node name="head_bolts_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.5, -2.3)
+script = ExtResource("1_slot")
+slot_id = "head_bolts_slot"
+accepted_part_id = "head_bolts"
+dependency_slot_ids = Array[String](["cylinder_head_slot"])
+interaction_hint = "Head Bolts Slot"
+
+[node name="timing_chain_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.25, -2.6)
+script = ExtResource("1_slot")
+slot_id = "timing_chain_slot"
+accepted_part_id = "timing_chain"
+dependency_slot_ids = Array[String](["crankshaft_slot"])
+interaction_hint = "Timing Chain Slot"
+
+[node name="timing_chain_tensioner_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.35, -2.6)
+script = ExtResource("1_slot")
+slot_id = "timing_chain_tensioner_slot"
+accepted_part_id = "timing_chain_tensioner"
+dependency_slot_ids = Array[String](["timing_chain_slot"])
+interaction_hint = "Timing Chain Tensioner Slot"
+
+[node name="camshaft_intake_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.75, -2.3)
+script = ExtResource("1_slot")
+slot_id = "camshaft_intake_slot"
+accepted_part_id = "camshaft_intake"
+dependency_slot_ids = Array[String](["cylinder_head_slot"])
+interaction_hint = "Intake Camshaft Slot"
+
+[node name="camshaft_exhaust_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.75, -2.3)
+script = ExtResource("1_slot")
+slot_id = "camshaft_exhaust_slot"
+accepted_part_id = "camshaft_exhaust"
+dependency_slot_ids = Array[String](["cylinder_head_slot"])
+interaction_hint = "Exhaust Camshaft Slot"
+
+[node name="vanos_unit_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.88, -2.3)
+script = ExtResource("1_slot")
+slot_id = "vanos_unit_slot"
+accepted_part_id = "vanos_unit"
+dependency_slot_ids = Array[String](["camshaft_intake_slot", "camshaft_exhaust_slot"])
+interaction_hint = "VANOS Unit Slot"
+
+[node name="intake_manifold_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42, 0.55, -2.3)
+script = ExtResource("1_slot")
+slot_id = "intake_manifold_slot"
+accepted_part_id = "intake_manifold"
+dependency_slot_ids = Array[String](["cylinder_head_slot"])
+interaction_hint = "Intake Manifold Slot"
+
+[node name="throttle_body_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.62, 0.6, -2.3)
+script = ExtResource("1_slot")
+slot_id = "throttle_body_slot"
+accepted_part_id = "throttle_body"
+dependency_slot_ids = Array[String](["intake_manifold_slot"])
+interaction_hint = "Throttle Body Slot"
+
+[node name="water_pump_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 0.1, -2.65)
+script = ExtResource("1_slot")
+slot_id = "water_pump_slot"
+accepted_part_id = "water_pump"
+dependency_slot_ids = Array[String](["engine_block_slot"])
+interaction_hint = "Water Pump Slot"
+
+[node name="thermostat_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.38, 0.28, -2.65)
+script = ExtResource("1_slot")
+slot_id = "thermostat_slot"
+accepted_part_id = "thermostat"
+dependency_slot_ids = Array[String](["engine_block_slot"])
+interaction_hint = "Thermostat Slot"
+
+[node name="thermostat_housing_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.43, 0.38, -2.65)
+script = ExtResource("1_slot")
+slot_id = "thermostat_housing_slot"
+accepted_part_id = "thermostat_housing"
+dependency_slot_ids = Array[String](["thermostat_slot"])
+interaction_hint = "Thermostat Housing Slot"
+
+[node name="radiator_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -3.2)
+script = ExtResource("1_slot")
+slot_id = "radiator_slot"
+accepted_part_id = "radiator"
+dependency_slot_ids = Array[String]([])
+interaction_hint = "Radiator Slot"
+
+[node name="radiator_hose_upper_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.6, -2.9)
+script = ExtResource("1_slot")
+slot_id = "radiator_hose_upper_slot"
+accepted_part_id = "radiator_hose_upper"
+dependency_slot_ids = Array[String](["radiator_slot", "thermostat_housing_slot"])
+interaction_hint = "Upper Radiator Hose Slot"
+
+[node name="radiator_hose_lower_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.05, -2.9)
+script = ExtResource("1_slot")
+slot_id = "radiator_hose_lower_slot"
+accepted_part_id = "radiator_hose_lower"
+dependency_slot_ids = Array[String](["radiator_slot", "water_pump_slot"])
+interaction_hint = "Lower Radiator Hose Slot"
+
+[node name="coolant_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0.85, -2.55)
+script = ExtResource("1_slot")
+slot_id = "coolant_slot"
+accepted_part_id = "coolant_5l"
+dependency_slot_ids = Array[String](["radiator_hose_upper_slot", "radiator_hose_lower_slot"])
+interaction_hint = "Coolant Fill"
+
+[node name="spark_plugs_set_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, -2.3)
+script = ExtResource("1_slot")
+slot_id = "spark_plugs_set_slot"
+accepted_part_id = "spark_plugs_set"
+dependency_slot_ids = Array[String](["cylinder_head_slot"])
+interaction_hint = "Spark Plugs Slot"
+
+[node name="ignition_coil_pack_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -2.3)
+script = ExtResource("1_slot")
+slot_id = "ignition_coil_pack_slot"
+accepted_part_id = "ignition_coil_pack"
+dependency_slot_ids = Array[String](["spark_plugs_set_slot"])
+interaction_hint = "Ignition Coil Pack Slot"
+
+[node name="fuel_rail_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.5, -2.3)
+script = ExtResource("1_slot")
+slot_id = "fuel_rail_slot"
+accepted_part_id = "fuel_rail"
+dependency_slot_ids = Array[String](["intake_manifold_slot"])
+interaction_hint = "Fuel Rail Slot"
+
+[node name="fuel_injectors_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.44, -2.3)
+script = ExtResource("1_slot")
+slot_id = "fuel_injectors_slot"
+accepted_part_id = "fuel_injectors"
+dependency_slot_ids = Array[String](["fuel_rail_slot"])
+interaction_hint = "Fuel Injectors Slot"
+
+[node name="alternator_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.2, -2.6)
+script = ExtResource("1_slot")
+slot_id = "alternator_slot"
+accepted_part_id = "alternator"
+dependency_slot_ids = Array[String](["engine_block_slot"])
+interaction_hint = "Alternator Slot"
+
+[node name="starter_motor_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.1, -2.05)
+script = ExtResource("1_slot")
+slot_id = "starter_motor_slot"
+accepted_part_id = "starter_motor"
+dependency_slot_ids = Array[String](["engine_block_slot"])
+interaction_hint = "Starter Motor Slot"
+
+[node name="exhaust_manifold_slot" type="Node3D" parent="EngineSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.45, -2.3)
+script = ExtResource("1_slot")
+slot_id = "exhaust_manifold_slot"
+accepted_part_id = "exhaust_manifold"
+dependency_slot_ids = Array[String](["cylinder_head_slot"])
+interaction_hint = "Exhaust Manifold Slot"
+
+[node name="ElectricalSlots" type="Node3D" parent="."]
+
+[node name="ecu_slot" type="Node3D" parent="ElectricalSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.7, -1.7)
+script = ExtResource("1_slot")
+slot_id = "ecu_slot"
+accepted_part_id = "ecu"
+dependency_slot_ids = Array[String]([])
+interaction_hint = "ECU Slot"
+
+[node name="engine_bay_loom_slot" type="Node3D" parent="ElectricalSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -1.85)
+script = ExtResource("1_slot")
+slot_id = "engine_bay_loom_slot"
+accepted_part_id = "engine_bay_loom"
+dependency_slot_ids = Array[String](["ecu_slot"])
+interaction_hint = "Engine Bay Wiring Loom"
+
+[node name="battery_slot" type="Node3D" parent="ElectricalSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.25, -1.85)
+script = ExtResource("1_slot")
+slot_id = "battery_slot"
+accepted_part_id = "battery"
+dependency_slot_ids = Array[String]([])
+interaction_hint = "Battery Slot"
+
+[node name="battery_cables_slot" type="Node3D" parent="ElectricalSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.38, -1.85)
+script = ExtResource("1_slot")
+slot_id = "battery_cables_slot"
+accepted_part_id = "battery_cables"
+dependency_slot_ids = Array[String](["battery_slot"])
+interaction_hint = "Battery Cables"
+
+[node name="DrivetrainSlots" type="Node3D" parent="."]
+
+[node name="flywheel_slot" type="Node3D" parent="DrivetrainSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, -1.55)
+script = ExtResource("1_slot")
+slot_id = "flywheel_slot"
+accepted_part_id = "flywheel"
+dependency_slot_ids = Array[String](["engine_block_slot"])
+interaction_hint = "Flywheel Slot"
+
+[node name="gearbox_slot" type="Node3D" parent="DrivetrainSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.75)
+script = ExtResource("1_slot")
+slot_id = "gearbox_slot"
+accepted_part_id = "gearbox"
+dependency_slot_ids = Array[String](["flywheel_slot"])
+interaction_hint = "Gearbox Slot"
+
+[node name="SuspensionSlots" type="Node3D" parent="."]
+
+[node name="front_subframe_slot" type="Node3D" parent="SuspensionSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, -2.3)
+script = ExtResource("1_slot")
+slot_id = "front_subframe_slot"
+accepted_part_id = "front_subframe"
+dependency_slot_ids = Array[String]([])
+interaction_hint = "Front Subframe Slot"
+
+[node name="engine_mounts_slot" type="Node3D" parent="SuspensionSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -2.2)
+script = ExtResource("1_slot")
+slot_id = "engine_mounts_slot"
+accepted_part_id = "engine_mounts"
+dependency_slot_ids = Array[String](["engine_block_slot", "front_subframe_slot"])
+interaction_hint = "Engine Mounts Slot"
+
+[node name="rear_subframe_slot" type="Node3D" parent="SuspensionSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 2.1)
+script = ExtResource("1_slot")
+slot_id = "rear_subframe_slot"
+accepted_part_id = "rear_subframe"
+dependency_slot_ids = Array[String]([])
+interaction_hint = "Rear Subframe Slot"
+
+[node name="FuelSlots" type="Node3D" parent="."]
+
+[node name="fuel_tank_slot" type="Node3D" parent="FuelSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 1.8)
+script = ExtResource("1_slot")
+slot_id = "fuel_tank_slot"
+accepted_part_id = "fuel_tank"
+dependency_slot_ids = Array[String]([])
+interaction_hint = "Fuel Tank Slot"
+
+[node name="fuel_pump_slot" type="Node3D" parent="FuelSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.32, 1.8)
+script = ExtResource("1_slot")
+slot_id = "fuel_pump_slot"
+accepted_part_id = "fuel_pump"
+dependency_slot_ids = Array[String](["fuel_tank_slot"])
+interaction_hint = "Fuel Pump Slot"
+
+[node name="fuel_filter_slot" type="Node3D" parent="FuelSlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.28, 0.8)
+script = ExtResource("1_slot")
+slot_id = "fuel_filter_slot"
+accepted_part_id = "fuel_filter"
+dependency_slot_ids = Array[String](["fuel_pump_slot"])
+interaction_hint = "Fuel Filter Slot"
+
+[node name="BodySlots" type="Node3D" parent="."]
+
+[node name="hood_slot" type="Node3D" parent="BodySlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, -2.35)
+script = ExtResource("1_slot")
+slot_id = "hood_slot"
+accepted_part_id = "hood"
+dependency_slot_ids = Array[String]([])
+interaction_hint = "Hood Slot"
+
+[node name="front_bumper_slot" type="Node3D" parent="BodySlots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, -3.4)
+script = ExtResource("1_slot")
+slot_id = "front_bumper_slot"
+accepted_part_id = "front_bumper"
+dependency_slot_ids = Array[String]([])
+interaction_hint = "Front Bumper Slot"
