@@ -1,5 +1,4 @@
 extends Node
-class_name PartSystem
 
 # Slots required for the E36 engine to start
 const STARTABLE_SLOTS := [
