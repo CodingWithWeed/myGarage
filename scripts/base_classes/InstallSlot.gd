@@ -9,8 +9,8 @@ var is_filled: bool = false
 var installed_part_id: String = ""
 
 var _ghost_mesh: MeshInstance3D = null
-var _installed_mesh: MeshInstance3D = null
 var _ghost_material: StandardMaterial3D = null
+var _installed_node: CarPartNode3D = null
 var _pulse_time: float = 0.0
 var _cached_hint: String = ""
 var _is_correct_part_held: bool = false
@@ -55,31 +55,21 @@ func _setup_meshes() -> void:
 	var color: Color = CATEGORY_COLORS.get(category, Color(0.5, 0.5, 0.5))
 	var size: Vector3 = CATEGORY_BOX_SIZE.get(category, Vector3(0.2, 0.2, 0.2))
 
-	# Ghost mesh — transparent, shown when slot is empty
+	# Very faint ghost outline — shows where a part goes.
+	# Brightens and pulses when the player carries the matching part.
 	_ghost_mesh = MeshInstance3D.new()
 	var ghost_box := BoxMesh.new()
 	ghost_box.size = size
 	_ghost_mesh.mesh = ghost_box
 	_ghost_material = StandardMaterial3D.new()
 	_ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	_ghost_material.albedo_color = Color(color.r, color.g, color.b, 0.35)
+	_ghost_material.albedo_color = Color(color.r, color.g, color.b, 0.08)
 	_ghost_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_ghost_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_ghost_mesh.material_override = _ghost_material
 	add_child(_ghost_mesh)
 
-	# Installed mesh — solid, shown when slot is filled
-	_installed_mesh = MeshInstance3D.new()
-	var installed_box := BoxMesh.new()
-	installed_box.size = size * 0.95
-	_installed_mesh.mesh = installed_box
-	var installed_mat := StandardMaterial3D.new()
-	installed_mat.albedo_color = color
-	installed_mat.roughness = 0.9
-	_installed_mesh.material_override = installed_mat
-	add_child(_installed_mesh)
-
-	# Collision area so the raycast can detect this slot
+	# Detection area so the raycast can find this slot
 	var area := Area3D.new()
 	area.collision_layer = 2
 	area.collision_mask = 0
@@ -91,23 +81,42 @@ func _setup_meshes() -> void:
 	add_child(area)
 
 func _process(delta: float) -> void:
-	if not is_highlighted or is_filled:
+	if is_filled or not _ghost_material:
 		return
-	_pulse_time += delta * 3.0
-	if _ghost_material:
-		_ghost_material.albedo_color.a = 0.25 + 0.15 * sin(_pulse_time)
+	if _is_correct_part_held:
+		_pulse_time += delta * 3.0
+		_ghost_material.albedo_color.a = 0.20 + 0.15 * sin(_pulse_time)
+	else:
+		_ghost_material.albedo_color.a = 0.08
 
-func install_part(part_id: String) -> void:
+# node is the live CarPartNode3D being snapped in; null when restoring from save.
+func install_part(part_id: String, node: CarPartNode3D = null) -> void:
 	is_filled = true
 	installed_part_id = part_id
+	_installed_node = node
+	if node:
+		node.is_installed = true
+		node.reparent(self, true)
+		node.position = Vector3.ZERO
+		node.rotation = Vector3.ZERO
+		node.freeze = true
+		node.collision_layer = 0
+		node.collision_mask = 0
 	update_visuals()
 	GameState.set_slot_filled(slot_id, part_id)
 	EventBus.part_installed.emit(part_id, slot_id)
 
 func remove_part() -> String:
 	var removed_id := installed_part_id
+	var node := _installed_node
 	is_filled = false
 	installed_part_id = ""
+	_installed_node = null
+	if node:
+		node.is_installed = false
+		var world := get_tree().current_scene
+		if world:
+			node.reparent(world, true)
 	update_visuals()
 	GameState.set_slot_empty(slot_id)
 	EventBus.part_removed.emit(removed_id, slot_id)
@@ -119,8 +128,6 @@ func can_accept(part_id: String) -> bool:
 func update_visuals() -> void:
 	if _ghost_mesh:
 		_ghost_mesh.visible = not is_filled
-	if _installed_mesh:
-		_installed_mesh.visible = is_filled
 
 func interact(player: Node) -> void:
 	var inv: PlayerInventory = player.get_node("Inventory")
@@ -128,16 +135,20 @@ func interact(player: Node) -> void:
 
 	if is_filled:
 		if inv.held_item_id == "":
+			var node := _installed_node
 			var removed_id := remove_part()
-			inv.pick_up(removed_id)
-			handler.spawn_and_hold(removed_id)
+			if node:
+				node.pick_up()
+				inv.pick_up(removed_id)
+				handler.attach_part_to_hand(node)
 			interacted.emit(player)
 	else:
 		var held_id := inv.held_item_id
 		if held_id == accepted_part_id and _deps_met():
-			handler.consume_held_node()
+			var node: CarPartNode3D = handler.held_node
+			handler.release_held_for_slot()
 			inv.drop_held()
-			install_part(held_id)
+			install_part(held_id, node)
 			interacted.emit(player)
 
 func set_hint_context(player: Node) -> void:

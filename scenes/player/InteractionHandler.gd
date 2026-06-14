@@ -94,6 +94,9 @@ func release_held_node() -> void:
 	held_node.reparent(world, true)
 	held_node = null
 
+func release_held_for_slot() -> void:
+	held_node = null
+
 func consume_held_node() -> void:
 	if held_node == null:
 		return

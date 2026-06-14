@@ -7,6 +7,7 @@ signal dropped(part_id: String)
 @export var part_id: String = ""
 
 var is_held: bool = false
+var is_installed: bool = false
 var _original_collision_layer: int = 0
 var _original_collision_mask: int = 0
 var _material: StandardMaterial3D = null
