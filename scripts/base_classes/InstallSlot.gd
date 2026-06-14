@@ -145,7 +145,7 @@ func set_hint_context(player: Node) -> void:
 	var held_id := inv.held_item_id
 
 	if is_filled:
-		var part_name := PartCatalog.get_part(installed_part_id).get("name", installed_part_id)
+		var part_name: String = PartCatalog.get_part(installed_part_id).get("name", installed_part_id)
 		if held_id == "":
 			_cached_hint = "[E] Remove: " + part_name
 			_is_correct_part_held = false
@@ -153,7 +153,7 @@ func set_hint_context(player: Node) -> void:
 			_cached_hint = part_name + " installed — drop item first"
 			_is_correct_part_held = false
 	else:
-		var accepted_name := PartCatalog.get_part(accepted_part_id).get("name", accepted_part_id)
+		var accepted_name: String = PartCatalog.get_part(accepted_part_id).get("name", accepted_part_id)
 		if held_id == "":
 			_cached_hint = "Needs: " + accepted_name
 			_is_correct_part_held = false

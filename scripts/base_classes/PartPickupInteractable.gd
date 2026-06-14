@@ -16,5 +16,5 @@ func interact(player: Node) -> void:
 func get_interaction_hint() -> String:
 	if _part == null or _part.is_held:
 		return ""
-	var part_name := PartCatalog.get_part(_part.part_id).get("name", _part.part_id)
+	var part_name: String = PartCatalog.get_part(_part.part_id).get("name", _part.part_id)
 	return "[E] Pick up: " + part_name
