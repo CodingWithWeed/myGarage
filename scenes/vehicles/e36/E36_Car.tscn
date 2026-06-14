@@ -87,7 +87,7 @@ transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
 shape = SubResource("CylinderShape3D_wheel")
 
 [node name="DriveCamera" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 2.5, 5.5)
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, 0.259, -0.966, 0, 2.5, -5.5)
 current = false
 fov = 75.0
 
