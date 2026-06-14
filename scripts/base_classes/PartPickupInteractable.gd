@@ -8,7 +8,6 @@ func interact(player: Node) -> void:
 	var handler: InteractionHandler = player.get_node("InteractionHandler")
 	if inv.held_item_id != "" or _part == null or _part.is_held or _part.is_installed:
 		return
-	_part.pick_up()
 	inv.pick_up(_part.part_id)
 	handler.attach_part_to_hand(_part)
 	interacted.emit(player)

@@ -153,7 +153,6 @@ func interact(player: Node) -> void:
 				var node := _installed_node
 				var removed_id := remove_part()
 				if node:
-					node.pick_up()
 					inv.pick_up(removed_id)
 					handler.attach_part_to_hand(node)
 			interacted.emit(player)

@@ -33,27 +33,33 @@ func make_visual(part_id: String) -> Node3D:
 	if _source == null:
 		return null
 	var key: String = _norm(String(PART_TO_GROUP[part_id]))
-	var grp := _find_group(_source, key)
-	if grp == null:
+	# A part's geometry can be spread across several sibling groups (e.g. the
+	# engine block, its cover, and ancillaries are separate nodes that all share
+	# the prefix). Gather every top-level match so the whole part is rebuilt.
+	var groups: Array[Node3D] = []
+	_find_groups(_source, key, groups)
+	if groups.is_empty():
 		return null
-	var dup := grp.duplicate() as Node3D
-	if dup == null:
-		return null
-	# Bake the model's cumulative transform (cm->m scale + Y-up rotation) so the
-	# duplicated geometry ends up at real-world meter scale and upright.
-	dup.transform = grp.global_transform
-	# Recenter on the part's visual centre.
-	var aabbs: Array[AABB] = []
-	_collect_mesh_aabbs(dup, Transform3D.IDENTITY, aabbs)
 	var holder := Node3D.new()
 	holder.name = "PartVisual"
+	var aabbs: Array[AABB] = []
+	for grp in groups:
+		var dup := grp.duplicate() as Node3D
+		if dup == null:
+			continue
+		# Bake the model's cumulative transform (cm->m scale + Y-up rotation) so
+		# the duplicated geometry ends up at real-world meter scale and upright.
+		dup.transform = grp.global_transform
+		holder.add_child(dup)
+		_collect_mesh_aabbs(dup, Transform3D.IDENTITY, aabbs)
+	# Recenter the whole assembly on its combined visual centre.
 	if aabbs.size() > 0:
 		var merged := aabbs[0]
 		for i in range(1, aabbs.size()):
 			merged = merged.merge(aabbs[i])
 		var centre := merged.position + merged.size * 0.5
-		dup.position -= centre
-	holder.add_child(dup)
+		for child in holder.get_children():
+			(child as Node3D).position -= centre
 	return holder
 
 func _ensure_source() -> void:
@@ -76,14 +82,15 @@ static func _norm(s: String) -> String:
 			out += ch
 	return out
 
-func _find_group(node: Node, key: String) -> Node3D:
+# Collects every top-most node whose normalized name matches the prefix. Once a
+# node matches we don't descend into it (its whole subtree is part of the group),
+# which avoids duplicating nested geometry twice.
+func _find_groups(node: Node, key: String, out: Array[Node3D]) -> void:
 	if node is Node3D and _norm(String(node.name)).begins_with(key):
-		return node as Node3D
+		out.append(node as Node3D)
+		return
 	for c in node.get_children():
-		var r := _find_group(c, key)
-		if r != null:
-			return r
-	return null
+		_find_groups(c, key, out)
 
 func _collect_mesh_aabbs(node: Node, xform: Transform3D, out: Array[AABB]) -> void:
 	var t := xform

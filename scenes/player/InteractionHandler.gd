@@ -9,6 +9,8 @@ signal interaction_hint_changed(hint: String)
 var current_interactable: Interactable = null
 var held_node: CarPartNode3D = null
 var _player: Node3D = null
+var _hold_point: Node3D = null
+var _camera: Node3D = null
 var _last_hint: String = ""
 
 const GENERIC_PART_SCENE := "res://scenes/parts/CarPart_Generic.tscn"
@@ -20,6 +22,8 @@ func _ready() -> void:
 		raycast = _player.get_node_or_null("Head/InteractionRaycast")
 	if raycast == null:
 		push_error("InteractionHandler: no RayCast3D assigned — interaction disabled")
+	_hold_point = _player.get_node_or_null("Head/HandAttachPoint")
+	_camera = _player.get_node_or_null("Head/Camera3D")
 
 func _process(_delta: float) -> void:
 	_update_interactable()
@@ -32,6 +36,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		var inv := get_node_or_null(inventory) as PlayerInventory
 		if inv and inv.held_item_id != "":
 			_drop_held_item(inv)
+	# While holding the rotate key, mouse motion spins the held part instead of
+	# the camera (PlayerController suppresses look on the same action).
+	if event is InputEventMouseMotion and held_node != null and Input.is_action_pressed("rotate_item"):
+		held_node.rotate_by_mouse((event as InputEventMouseMotion).relative, _camera)
 
 func _update_interactable() -> void:
 	if not raycast:
@@ -80,21 +88,23 @@ func _find_interactable(node: Node) -> Interactable:
 		current = current.get_parent()
 	return null
 
+# Begin holding a part: it stays in the world and chases the hold point.
 func attach_part_to_hand(node: CarPartNode3D) -> void:
 	held_node = node
-	var hand := _player.get_node_or_null("Head/HandAttachPoint")
-	if hand:
-		node.reparent(hand, false)
-		node.transform = Transform3D.IDENTITY
+	node.pick_up(_hold_point, _player as PhysicsBody3D)
 
 func release_held_node() -> void:
 	if held_node == null:
 		return
-	var world := get_tree().current_scene
-	held_node.reparent(world, true)
+	held_node.drop()
 	held_node = null
 
+# A slot is taking ownership of the held part (install): stop the grab but let
+# the slot handle freezing/snapping.
 func release_held_for_slot() -> void:
+	if held_node == null:
+		return
+	held_node.end_grab()
 	held_node = null
 
 func consume_held_node() -> void:
@@ -111,7 +121,8 @@ func spawn_and_hold(part_id: String) -> void:
 	var node: CarPartNode3D = scene.instantiate()
 	node.part_id = part_id
 	get_tree().current_scene.add_child(node)
-	node.pick_up()
+	if _hold_point:
+		node.global_position = _hold_point.global_position
 	attach_part_to_hand(node)
 
 func _drop_held_item(inv: PlayerInventory) -> void:
@@ -120,9 +131,5 @@ func _drop_held_item(inv: PlayerInventory) -> void:
 	var part_id: String = inv.drop_held()
 	if part_id == "":
 		return
-	var drop_pos: Vector3 = _player.global_position + _player.global_transform.basis.z * -1.5
-	drop_pos.y += 0.5
-	var world := get_tree().current_scene
-	held_node.reparent(world, true)
-	held_node.drop(drop_pos, _player.global_transform.basis.z * -2.0)
+	held_node.drop()
 	held_node = null
