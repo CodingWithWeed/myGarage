@@ -3,30 +3,52 @@ class_name CarModel
 
 # Drives the "hide & reveal" build-up on the imported E36 model.
 # Removable parts are hidden at load (bare shell); installing the matching
-# gameplay part reveals that part's real mesh in place via EventBus signals.
+# gameplay part reveals that part's real geometry in place via EventBus.
 
-# part_id (gameplay) -> model group name prefix(es) whose meshes to reveal.
+# part_id (gameplay) -> model group name prefix(es) whose nodes to reveal.
 # Matching is fuzzy (normalized, prefix-based) so it survives Godot's glTF
-# node-name sanitizing and the per-material child suffixes.
+# node-name sanitizing. Toggling a group node hides/shows its whole subtree.
 const PART_TO_GROUPS := {
 	"engine_block": ["E36_coupe_engine_m51"],
 	"gearbox": ["E36_coupe_transmission"],
 	"front_subframe": ["E36_subframe_F"],
 }
 
-# Group prefixes hidden on load so the car starts stripped of these parts.
-# (Wheels/brakes intentionally left visible for now so the body still sits
-# on its wheels instead of floating.)
+# Group prefixes hidden on load. Includes the outer body skin + glass + trim
+# (so the engine bay and underbody are accessible) and the drivetrain parts
+# that are installed through gameplay. Wheels/brakes stay visible so the car
+# still sits on its wheels.
 const HIDDEN_AT_START := [
+	# Outer body skin (hood/roof/fenders/quarters all live under this group)
+	"E36_coupe_bumper",
+	"E36_coupe_fender",
+	"E36_coupe_grille",
+	"E36_coupe_headlight",
+	"E36_taillight",
+	"E36_coupe_hood_logo",
+	"E36_coupe_trunk",
+	"E36_coupe_panels",
+	# Glass
+	"E36_coupe_windshield",
+	"E36_coupe_sideglass",
+	"E36_coupe_doorglass",
+	"E36_coupe_backlight",
+	"E36_coupe_sunroof",
+	# Wipers / mirrors / door cards
+	"E36_coupe_wipers",
+	"E36_coupe_washers",
+	"E36_coupe_intmirror",
+	"E36_coupe_doorpanel",
+	# Drivetrain parts revealed through install
 	"E36_coupe_engine_m51",
 	"E36_coupe_transmission",
 	"E36_subframe_F",
 ]
 
-var _meshes: Array[MeshInstance3D] = []
+var _nodes: Array[Node3D] = []
 
 func _ready() -> void:
-	_gather_meshes(self)
+	_gather_nodes(self)
 	for key in HIDDEN_AT_START:
 		_set_group_visible(String(key), false)
 	EventBus.part_installed.connect(_on_part_installed)
@@ -37,11 +59,11 @@ func _ready() -> void:
 		if GameState.is_slot_filled(pid + "_slot"):
 			_reveal_part(pid, true)
 
-func _gather_meshes(node: Node) -> void:
-	if node is MeshInstance3D:
-		_meshes.append(node)
+func _gather_nodes(node: Node) -> void:
+	if node is Node3D and node != self:
+		_nodes.append(node)
 	for child in node.get_children():
-		_gather_meshes(child)
+		_gather_nodes(child)
 
 static func _norm(s: String) -> String:
 	var out := ""
@@ -56,9 +78,9 @@ func _set_group_visible(group_key: String, vis: bool) -> void:
 	var key := _norm(group_key)
 	if key == "":
 		return
-	for m in _meshes:
-		if _norm(String(m.name)).begins_with(key):
-			m.visible = vis
+	for n in _nodes:
+		if _norm(String(n.name)).begins_with(key):
+			n.visible = vis
 
 func _reveal_part(part_id: String, vis: bool) -> void:
 	var groups: Array = PART_TO_GROUPS.get(part_id, [])
