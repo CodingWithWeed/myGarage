@@ -35,6 +35,7 @@ const BRAKE_POWER := 30.0
 
 var _nodes: Array[Node3D] = []
 var _is_driven := false
+var _just_entered := false
 var _driver: Node = null
 var _drive_camera: Camera3D = null
 
@@ -56,6 +57,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not _is_driven:
 		return
+	# Skip the first frame after entering so the same E keypress doesn't exit immediately.
+	if _just_entered:
+		_just_entered = false
+		return
 	var throttle := Input.get_axis("move_backward", "move_forward")
 	var steer_input := Input.get_axis("move_right", "move_left") * MAX_STEER
 	steering = move_toward(steering, steer_input, delta * 3.0)
@@ -75,6 +80,7 @@ func enter_car(player: Node) -> void:
 		return
 	_driver = player
 	_is_driven = true
+	_just_entered = true
 	freeze = false
 	player.process_mode = Node.PROCESS_MODE_DISABLED
 	if _drive_camera:
