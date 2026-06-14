@@ -87,3 +87,43 @@ slot_id = "front_lower_control_arm_right_slot"
 accepted_part_id = "front_lower_control_arm_right"
 use_model_reveal = true
 interaction_hint = "Front Lower Arm (R) Slot"
+
+[node name="front_bumper_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 2.05)
+script = ExtResource("3_slot")
+slot_id = "front_bumper_slot"
+accepted_part_id = "front_bumper"
+use_model_reveal = true
+interaction_hint = "Front Bumper Slot"
+
+[node name="front_fender_left_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 0.65, 1.2)
+script = ExtResource("3_slot")
+slot_id = "front_fender_left_slot"
+accepted_part_id = "front_fender_left"
+use_model_reveal = true
+interaction_hint = "Front Fender (L) Slot"
+
+[node name="front_fender_right_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, 0.65, 1.2)
+script = ExtResource("3_slot")
+slot_id = "front_fender_right_slot"
+accepted_part_id = "front_fender_right"
+use_model_reveal = true
+interaction_hint = "Front Fender (R) Slot"
+
+[node name="front_door_left_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0.65, 0.15)
+script = ExtResource("3_slot")
+slot_id = "front_door_left_slot"
+accepted_part_id = "front_door_left"
+use_model_reveal = true
+interaction_hint = "Front Door (L) Slot"
+
+[node name="front_door_right_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0.65, 0.15)
+script = ExtResource("3_slot")
+slot_id = "front_door_right_slot"
+accepted_part_id = "front_door_right"
+use_model_reveal = true
+interaction_hint = "Front Door (R) Slot"

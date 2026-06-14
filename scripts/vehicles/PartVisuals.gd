@@ -8,50 +8,59 @@ extends Node
 
 const MODEL_PATH := "res://assets/models/bmw_3-series_e36_street/scene.gltf"
 
-# Gameplay part_id -> model group whose subtree is that part's real geometry.
-const PART_TO_GROUP := {
-	"engine_block": "E36_coupe_engine_m51",
-	"gearbox": "E36_coupe_transmission",
-	"front_subframe": "E36_subframe_F",
-	"rear_subframe": "E36_coupe_subframe_R",
-	"front_anti_roll_bar": "E36_swaybar_F",
-	"rear_anti_roll_bar": "E36_coupe_swaybar_R",
-	"front_lower_control_arm_left": "E36_lowerarm_F_a",
-	"front_lower_control_arm_right": "E36_lowerarm_F_b",
-	"hood": "E36_coupe_bumper_R_trim_BMWE36_paint.001",
+# Gameplay part_id -> list of model group prefixes that make up the part's geometry.
+# Multiple prefixes are needed when a part's nodes don't share a single common prefix
+# (e.g. door has separate panel and glass nodes at the same tree level).
+const PART_TO_GROUPS := {
+	"engine_block": ["E36_coupe_engine_m51"],
+	"gearbox": ["E36_coupe_transmission"],
+	"front_subframe": ["E36_subframe_F"],
+	"rear_subframe": ["E36_coupe_subframe_R"],
+	"front_anti_roll_bar": ["E36_swaybar_F"],
+	"rear_anti_roll_bar": ["E36_coupe_swaybar_R"],
+	"front_lower_control_arm_left": ["E36_lowerarm_F_a"],
+	"front_lower_control_arm_right": ["E36_lowerarm_F_b"],
+	"hood": ["E36_coupe_bumper_R_trim_BMWE36_paint.001"],
+	"front_bumper": ["E36_coupe_bumper_F2"],
+	"front_fender_left": ["E36_coupe_fender_L"],
+	"front_fender_right": ["E36_coupe_fender_R"],
+	"front_door_left": ["E36_coupe_doorpanel_FL", "E36_coupe_doorglass_FL"],
+	"front_door_right": ["E36_coupe_doorpanel_FR", "E36_coupe_doorglass_FR"],
 }
 
 var _source: Node = null
 
 func has_visual(part_id: String) -> bool:
-	return PART_TO_GROUP.has(part_id)
+	return PART_TO_GROUPS.has(part_id)
 
 func make_visual(part_id: String) -> Node3D:
-	if not PART_TO_GROUP.has(part_id):
+	if not PART_TO_GROUPS.has(part_id):
 		return null
 	_ensure_source()
 	if _source == null:
 		return null
-	var key: String = _norm(String(PART_TO_GROUP[part_id]))
-	# A part's geometry can be spread across several sibling groups (e.g. the
-	# engine block, its cover, and ancillaries are separate nodes that all share
-	# the prefix). Gather every top-level match so the whole part is rebuilt.
-	var groups: Array[Node3D] = []
-	_find_groups(_source, key, groups)
-	if groups.is_empty():
-		return null
 	var holder := Node3D.new()
 	holder.name = "PartVisual"
 	var aabbs: Array[AABB] = []
-	for grp in groups:
-		var dup := grp.duplicate() as Node3D
-		if dup == null:
-			continue
-		# Bake the model's cumulative transform (cm->m scale + Y-up rotation) so
-		# the duplicated geometry ends up at real-world meter scale and upright.
-		dup.transform = grp.global_transform
-		holder.add_child(dup)
-		_collect_mesh_aabbs(dup, Transform3D.IDENTITY, aabbs)
+	for group_key in PART_TO_GROUPS[part_id]:
+		var key: String = _norm(String(group_key))
+		# Collect every top-level node whose normalized name matches the prefix.
+		# For parts spread across sibling nodes (e.g. engine cover + block + ancillaries)
+		# this gathers the whole assembly in one pass.
+		var groups: Array[Node3D] = []
+		_find_groups(_source, key, groups)
+		for grp in groups:
+			var dup := grp.duplicate() as Node3D
+			if dup == null:
+				continue
+			# Bake the model's cumulative transform (cm->m scale + Y-up rotation) so
+			# the duplicated geometry ends up at real-world meter scale and upright.
+			dup.transform = grp.global_transform
+			holder.add_child(dup)
+			_collect_mesh_aabbs(dup, Transform3D.IDENTITY, aabbs)
+	if holder.get_child_count() == 0:
+		holder.queue_free()
+		return null
 	# Recenter the whole assembly on its combined visual centre.
 	if aabbs.size() > 0:
 		var merged := aabbs[0]

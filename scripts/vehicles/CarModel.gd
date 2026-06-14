@@ -17,14 +17,14 @@ const PART_TO_GROUPS := {
 	"rear_anti_roll_bar": ["E36_coupe_swaybar_R"],
 	"front_lower_control_arm_left": ["E36_lowerarm_F_a"],
 	"front_lower_control_arm_right": ["E36_lowerarm_F_b"],
-	# The whole paint.001 submesh is the hood panel — a removable body part.
 	"hood": ["E36_coupe_bumper_R_trim_BMWE36_paint.001"],
+	"front_bumper": ["E36_coupe_bumper_F2"],
+	"front_fender_left": ["E36_coupe_fender_L"],
+	"front_fender_right": ["E36_coupe_fender_R"],
+	"front_door_left": ["E36_coupe_doorpanel_FL", "E36_coupe_doorglass_FL"],
+	"front_door_right": ["E36_coupe_doorpanel_FR", "E36_coupe_doorglass_FR"],
 }
 
-# Group prefixes hidden on load — only the gameplay parts that are installed
-# through the build-up loop. The body/glass/interior stay so it still reads as
-# a car. (The outer skin is one welded group in this model, so the hood can't
-# be popped independently; access to a covered bay is handled separately.)
 const HIDDEN_AT_START := [
 	"E36_coupe_engine_m51",
 	"E36_coupe_transmission",
@@ -34,6 +34,13 @@ const HIDDEN_AT_START := [
 	"E36_coupe_swaybar_R",
 	"E36_lowerarm_F_a",
 	"E36_lowerarm_F_b",
+	"E36_coupe_bumper_F2",
+	"E36_coupe_fender_L",
+	"E36_coupe_fender_R",
+	"E36_coupe_doorpanel_FL",
+	"E36_coupe_doorglass_FL",
+	"E36_coupe_doorpanel_FR",
+	"E36_coupe_doorglass_FR",
 ]
 
 var _nodes: Array[Node3D] = []
