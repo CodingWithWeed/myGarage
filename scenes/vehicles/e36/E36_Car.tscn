@@ -1,12 +1,29 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/models/bmw_3-series_e36_street/scene.gltf" id="1_model"]
 [ext_resource type="Script" path="res://scripts/vehicles/CarModel.gd" id="2_carmodel"]
 [ext_resource type="Script" path="res://scripts/base_classes/InstallSlot.gd" id="3_slot"]
 [ext_resource type="Script" path="res://scripts/systems/AssemblyValidator.gd" id="4_validator"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_body"]
+size = Vector3(1.85, 0.9, 3.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cabin"]
+size = Vector3(1.6, 0.55, 2.0)
+
 [node name="E36_Car" type="Node3D"]
 script = ExtResource("2_carmodel")
+
+[node name="CarCollision" type="StaticBody3D" parent="."]
+collision_layer = 2
+
+[node name="BodyShape" type="CollisionShape3D" parent="CarCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.25)
+shape = SubResource("BoxShape3D_body")
+
+[node name="CabinShape" type="CollisionShape3D" parent="CarCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0.0)
+shape = SubResource("BoxShape3D_cabin")
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
 
