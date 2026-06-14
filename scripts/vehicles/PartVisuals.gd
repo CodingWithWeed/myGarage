@@ -21,11 +21,11 @@ const PART_TO_GROUPS := {
 	"front_lower_control_arm_left": ["E36_lowerarm_F_a"],
 	"front_lower_control_arm_right": ["E36_lowerarm_F_b"],
 	"hood": ["E36_coupe_bumper_R_trim_BMWE36_paint.001"],
-	"front_bumper": ["E36_coupe_bumper_F2"],
-	"front_fender_left": ["E36_coupe_fender_L"],
-	"front_fender_right": ["E36_coupe_fender_R"],
-	"front_door_left": ["E36_coupe_doorpanel_FL", "E36_coupe_doorglass_FL"],
-	"front_door_right": ["E36_coupe_doorpanel_FR", "E36_coupe_doorglass_FR"],
+	"front_bumper": ["E36_body_bumper_F"],
+	"front_fender_left": ["E36_body_fender_L"],
+	"front_fender_right": ["E36_body_fender_R"],
+	"front_door_left": ["E36_body_door_FL"],
+	"front_door_right": ["E36_body_door_FR"],
 }
 
 var _source: Node = null
