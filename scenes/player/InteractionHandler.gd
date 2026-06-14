@@ -8,7 +8,7 @@ signal interaction_hint_changed(hint: String)
 
 var current_interactable: Interactable = null
 var held_node: CarPartNode3D = null
-var _player: Node = null
+var _player: Node3D = null
 var _last_hint: String = ""
 
 const GENERIC_PART_SCENE := "res://scenes/parts/CarPart_Generic.tscn"
@@ -24,7 +24,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") and current_interactable != null:
 		current_interactable.interact(_player)
 	if event.is_action_pressed("drop_item"):
-		var inv := get_node_or_null(inventory)
+		var inv := get_node_or_null(inventory) as PlayerInventory
 		if inv and inv.held_item_id != "":
 			_drop_held_item(inv)
 
@@ -106,13 +106,13 @@ func spawn_and_hold(part_id: String) -> void:
 	node.pick_up()
 	attach_part_to_hand(node)
 
-func _drop_held_item(inv: Node) -> void:
+func _drop_held_item(inv: PlayerInventory) -> void:
 	if held_node == null:
 		return
-	var part_id := inv.drop_held()
+	var part_id: String = inv.drop_held()
 	if part_id == "":
 		return
-	var drop_pos := _player.global_position + _player.global_transform.basis.z * -1.5
+	var drop_pos: Vector3 = _player.global_position + _player.global_transform.basis.z * -1.5
 	drop_pos.y += 0.5
 	var world := get_tree().current_scene
 	held_node.reparent(world, true)
