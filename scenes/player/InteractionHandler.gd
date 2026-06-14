@@ -15,6 +15,11 @@ const GENERIC_PART_SCENE := "res://scenes/parts/CarPart_Generic.tscn"
 
 func _ready() -> void:
 	_player = get_parent()
+	# Fail-safe: if the exported reference didn't resolve, find it by path.
+	if raycast == null and _player:
+		raycast = _player.get_node_or_null("Head/InteractionRaycast")
+	if raycast == null:
+		push_error("InteractionHandler: no RayCast3D assigned — interaction disabled")
 
 func _process(_delta: float) -> void:
 	_update_interactable()

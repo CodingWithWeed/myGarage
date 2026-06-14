@@ -18,3 +18,13 @@ func get_interaction_hint() -> String:
 		return ""
 	var part_name: String = PartCatalog.get_part(_part.part_id).get("name", _part.part_id)
 	return "[E] Pick up: " + part_name
+
+func on_highlight() -> void:
+	super.on_highlight()
+	if _part:
+		_part.set_highlighted(true)
+
+func on_unhighlight() -> void:
+	super.on_unhighlight()
+	if _part:
+		_part.set_highlighted(false)

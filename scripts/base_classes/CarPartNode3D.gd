@@ -9,6 +9,7 @@ signal dropped(part_id: String)
 var is_held: bool = false
 var _original_collision_layer: int = 0
 var _original_collision_mask: int = 0
+var _material: StandardMaterial3D = null
 
 const CATEGORY_COLORS := {
 	"engine": Color(0.8, 0.2, 0.1),
@@ -61,6 +62,7 @@ func _apply_category_material() -> void:
 		mat.albedo_color = color
 		mat.roughness = 0.9
 		mesh_node.material_override = mat
+		_material = mat
 
 	var col_node := get_node_or_null("CollisionShape3D")
 	if col_node is CollisionShape3D:
@@ -68,7 +70,16 @@ func _apply_category_material() -> void:
 		shape.size = size
 		col_node.shape = shape
 
+func set_highlighted(on: bool) -> void:
+	if _material == null:
+		return
+	_material.emission_enabled = on
+	if on:
+		_material.emission = _material.albedo_color.lightened(0.5)
+		_material.emission_energy_multiplier = 0.6
+
 func pick_up() -> void:
+	set_highlighted(false)
 	is_held = true
 	freeze = true
 	collision_layer = 0
