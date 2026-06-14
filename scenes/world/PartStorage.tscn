@@ -1,0 +1,78 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/parts/CarPart_Generic.tscn" id="1_part"]
+[ext_resource type="PackedScene" path="res://scenes/world/Pallet.tscn" id="2_pallet"]
+[ext_resource type="PackedScene" path="res://scenes/world/Workbench.tscn" id="3_bench"]
+
+[node name="PartStorage" type="Node3D"]
+
+[node name="Pallet1" parent="." instance=ExtResource("2_pallet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
+
+[node name="Pallet2" parent="." instance=ExtResource("2_pallet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6)
+
+[node name="Workbench" parent="." instance=ExtResource("3_bench")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)
+
+[node name="Parts" type="Node3D" parent="."]
+
+[node name="engine_block" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.35, -0.8)
+part_id = "engine_block"
+
+[node name="gearbox" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.35, -0.8)
+part_id = "gearbox"
+
+[node name="front_subframe" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.35, -0.4)
+part_id = "front_subframe"
+
+[node name="rear_subframe" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.35, -0.4)
+part_id = "rear_subframe"
+
+[node name="front_anti_roll_bar" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.4, 0.4)
+part_id = "front_anti_roll_bar"
+
+[node name="rear_anti_roll_bar" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.4, 0.4)
+part_id = "rear_anti_roll_bar"
+
+[node name="front_lower_control_arm_left" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.4, 0.85)
+part_id = "front_lower_control_arm_left"
+
+[node name="front_lower_control_arm_right" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.4, 0.85)
+part_id = "front_lower_control_arm_right"
+
+[node name="cylinder_head" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.32, 0.75, -0.5)
+part_id = "cylinder_head"
+
+[node name="oil_pan" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.68, 0.75, -0.5)
+part_id = "oil_pan"
+
+[node name="battery" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.32, 0.75, -0.15)
+part_id = "battery"
+
+[node name="head_gasket" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.68, 0.75, -0.15)
+part_id = "head_gasket"
+
+[node name="timing_chain" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.32, 0.75, 0.2)
+part_id = "timing_chain"
+
+[node name="radiator" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.68, 0.75, 0.2)
+part_id = "radiator"
+
+[node name="ecu" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.32, 0.75, 0.55)
+part_id = "ecu"
