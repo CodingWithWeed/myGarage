@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://player_main"]
+
+[ext_resource type="Script" path="res://scenes/player/PlayerController.gd" id="1_controller"]
+[ext_resource type="Script" path="res://scenes/player/InteractionHandler.gd" id="2_interaction"]
+[ext_resource type="Script" path="res://scenes/player/PlayerInventory.gd" id="3_inventory"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1"]
+top_radius = 0.02
+bottom_radius = 0.02
+height = 0.5
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_controller")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+fov = 80.0
+
+[node name="InteractionRaycast" type="RayCast3D" parent="Head"]
+target_position = Vector3(0, 0, -2)
+collision_mask = 7
+
+[node name="HandAttachPoint" type="Marker3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, -0.25, -0.5)
+
+[node name="CrosshairMesh" type="MeshInstance3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+mesh = SubResource("CylinderMesh_1")
+visible = false
+
+[node name="InteractionHandler" type="Node" parent="."]
+script = ExtResource("2_interaction")
+raycast = NodePath("../Head/InteractionRaycast")
+inventory = NodePath("../Inventory")
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("3_inventory")
