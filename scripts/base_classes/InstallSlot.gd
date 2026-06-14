@@ -137,7 +137,7 @@ func can_accept(part_id: String) -> bool:
 
 func update_visuals() -> void:
 	if _ghost_mesh:
-		_ghost_mesh.visible = not is_filled
+		_ghost_mesh.visible = false
 
 func interact(player: Node) -> void:
 	var inv: PlayerInventory = player.get_node("Inventory")
@@ -200,6 +200,8 @@ func set_hint_context(player: Node) -> void:
 			_cached_hint = "Wrong part"
 			_is_correct_part_held = false
 
+	if _ghost_mesh:
+		_ghost_mesh.visible = _is_correct_part_held and not is_filled
 	if _ghost_material:
 		if _is_correct_part_held and not is_filled:
 			_ghost_material.emission_enabled = true
