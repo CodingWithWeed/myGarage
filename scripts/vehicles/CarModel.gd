@@ -12,6 +12,11 @@ const PART_TO_GROUPS := {
 	"engine_block": ["E36_coupe_engine_m51"],
 	"gearbox": ["E36_coupe_transmission"],
 	"front_subframe": ["E36_subframe_F"],
+	"rear_subframe": ["E36_coupe_subframe_R"],
+	"front_anti_roll_bar": ["E36_swaybar_F"],
+	"rear_anti_roll_bar": ["E36_coupe_swaybar_R"],
+	"front_lower_control_arm_left": ["E36_lowerarm_F_a"],
+	"front_lower_control_arm_right": ["E36_lowerarm_F_b"],
 	# The whole paint.001 submesh is the hood panel — a removable body part.
 	"hood": ["E36_coupe_bumper_R_trim_BMWE36_paint.001"],
 }
@@ -24,6 +29,11 @@ const HIDDEN_AT_START := [
 	"E36_coupe_engine_m51",
 	"E36_coupe_transmission",
 	"E36_subframe_F",
+	"E36_coupe_subframe_R",
+	"E36_swaybar_F",
+	"E36_coupe_swaybar_R",
+	"E36_lowerarm_F_a",
+	"E36_lowerarm_F_b",
 ]
 
 var _nodes: Array[Node3D] = []

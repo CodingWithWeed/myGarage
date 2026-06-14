@@ -47,3 +47,43 @@ accepted_part_id = "hood"
 use_model_reveal = true
 starts_filled = true
 interaction_hint = "Hood"
+
+[node name="rear_subframe_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -1.4)
+script = ExtResource("3_slot")
+slot_id = "rear_subframe_slot"
+accepted_part_id = "rear_subframe"
+use_model_reveal = true
+interaction_hint = "Rear Subframe Slot"
+
+[node name="front_anti_roll_bar_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 1.55)
+script = ExtResource("3_slot")
+slot_id = "front_anti_roll_bar_slot"
+accepted_part_id = "front_anti_roll_bar"
+use_model_reveal = true
+interaction_hint = "Front Anti-Roll Bar Slot"
+
+[node name="rear_anti_roll_bar_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, -1.55)
+script = ExtResource("3_slot")
+slot_id = "rear_anti_roll_bar_slot"
+accepted_part_id = "rear_anti_roll_bar"
+use_model_reveal = true
+interaction_hint = "Rear Anti-Roll Bar Slot"
+
+[node name="front_lower_control_arm_left_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.15, 1.4)
+script = ExtResource("3_slot")
+slot_id = "front_lower_control_arm_left_slot"
+accepted_part_id = "front_lower_control_arm_left"
+use_model_reveal = true
+interaction_hint = "Front Lower Arm (L) Slot"
+
+[node name="front_lower_control_arm_right_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.15, 1.4)
+script = ExtResource("3_slot")
+slot_id = "front_lower_control_arm_right_slot"
+accepted_part_id = "front_lower_control_arm_right"
+use_model_reveal = true
+interaction_hint = "Front Lower Arm (R) Slot"

@@ -103,3 +103,23 @@ part_id = "radiator"
 [node name="ecu" parent="Parts" instance=ExtResource("1_part")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 1.28, 0)
 part_id = "ecu"
+
+[node name="rear_subframe" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0.3, 0.95)
+part_id = "rear_subframe"
+
+[node name="front_anti_roll_bar" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.3, 0.95)
+part_id = "front_anti_roll_bar"
+
+[node name="rear_anti_roll_bar" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.3, 0.95)
+part_id = "rear_anti_roll_bar"
+
+[node name="front_lower_control_arm_left" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0.3, 0.95)
+part_id = "front_lower_control_arm_left"
+
+[node name="front_lower_control_arm_right" parent="Parts" instance=ExtResource("1_part")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.3, 0.95)
+part_id = "front_lower_control_arm_right"
