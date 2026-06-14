@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/systems/CustomerSpawner.gd" id="1_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/vehicles/e36/E36_Shell.tscn" id="3_e36"]
 [ext_resource type="PackedScene" path="res://scenes/world/StorageShelf.tscn" id="4_shelf"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://assets/models/bmw_3-series_e36_street/scene.gltf" id="6_carmodel"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_1"]
 sky_top_color = Color(0.4, 0.55, 0.7, 1)
@@ -68,3 +69,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -1)
 
 [node name="HUD" parent="." instance=ExtResource("5_hud")]
+
+[node name="E36_RealModel_Preview" parent="." instance=ExtResource("6_carmodel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0)
