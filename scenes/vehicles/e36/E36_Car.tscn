@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/models/bmw_3-series_e36_street/scene.gltf" id="1_model"]
 [ext_resource type="Script" path="res://scripts/vehicles/CarModel.gd" id="2_carmodel"]
 [ext_resource type="Script" path="res://scripts/base_classes/InstallSlot.gd" id="3_slot"]
 [ext_resource type="Script" path="res://scripts/systems/AssemblyValidator.gd" id="4_validator"]
+[ext_resource type="Script" path="res://scripts/vehicles/CarEnterInteractable.gd" id="5_enter"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]
 size = Vector3(1.85, 0.9, 3.7)
@@ -11,19 +12,89 @@ size = Vector3(1.85, 0.9, 3.7)
 [sub_resource type="BoxShape3D" id="BoxShape3D_cabin"]
 size = Vector3(1.6, 0.55, 2.0)
 
-[node name="E36_Car" type="Node3D"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_wheel"]
+radius = 0.31
+height = 0.22
+
+[node name="E36_Car" type="VehicleBody3D"]
 script = ExtResource("2_carmodel")
+mass = 1400.0
+collision_layer = 3
+collision_mask = 1
 
-[node name="CarCollision" type="StaticBody3D" parent="."]
-collision_layer = 1
-
-[node name="BodyShape" type="CollisionShape3D" parent="CarCollision"]
+[node name="BodyShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.25)
 shape = SubResource("BoxShape3D_body")
 
-[node name="CabinShape" type="CollisionShape3D" parent="CarCollision"]
+[node name="CabinShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0.0)
 shape = SubResource("BoxShape3D_cabin")
+
+[node name="WheelFL" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.73, 0.31, 1.35)
+use_as_steering = true
+use_as_traction = false
+wheel_radius = 0.31
+wheel_rest_length = 0.2
+wheel_friction_slip = 2.5
+suspension_stiffness = 20.0
+suspension_max_force = 8000.0
+
+[node name="WheelFLShape" type="CollisionShape3D" parent="WheelFL"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+shape = SubResource("CylinderShape3D_wheel")
+
+[node name="WheelFR" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.73, 0.31, 1.35)
+use_as_steering = true
+use_as_traction = false
+wheel_radius = 0.31
+wheel_rest_length = 0.2
+wheel_friction_slip = 2.5
+suspension_stiffness = 20.0
+suspension_max_force = 8000.0
+
+[node name="WheelFRShape" type="CollisionShape3D" parent="WheelFR"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+shape = SubResource("CylinderShape3D_wheel")
+
+[node name="WheelRL" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.73, 0.31, -1.35)
+use_as_steering = false
+use_as_traction = true
+wheel_radius = 0.31
+wheel_rest_length = 0.2
+wheel_friction_slip = 2.5
+suspension_stiffness = 20.0
+suspension_max_force = 8000.0
+
+[node name="WheelRLShape" type="CollisionShape3D" parent="WheelRL"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+shape = SubResource("CylinderShape3D_wheel")
+
+[node name="WheelRR" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.73, 0.31, -1.35)
+use_as_steering = false
+use_as_traction = true
+wheel_radius = 0.31
+wheel_rest_length = 0.2
+wheel_friction_slip = 2.5
+suspension_stiffness = 20.0
+suspension_max_force = 8000.0
+
+[node name="WheelRRShape" type="CollisionShape3D" parent="WheelRR"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+shape = SubResource("CylinderShape3D_wheel")
+
+[node name="DriveCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 2.5, 5.5)
+current = false
+fov = 75.0
+
+[node name="EnterInteractable" type="Node3D" parent="."]
+script = ExtResource("5_enter")
+interaction_hint = "Press E to enter"
+interaction_distance = 3.0
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
 

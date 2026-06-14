@@ -77,6 +77,10 @@ func _find_interactable(node: Node) -> Interactable:
 	var pickup := node.get_node_or_null("Pickup")
 	if pickup is Interactable:
 		return pickup as Interactable
+	# Check all direct children (e.g. CarEnterInteractable on VehicleBody3D)
+	for child in node.get_children():
+		if child is Interactable:
+			return child as Interactable
 	# Walk up parent chain
 	var current := node.get_parent()
 	while current:

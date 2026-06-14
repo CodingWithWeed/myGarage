@@ -1,13 +1,11 @@
-extends Node3D
+extends VehicleBody3D
 class_name CarModel
 
 # Drives the "hide & reveal" build-up on the imported E36 model.
 # Removable parts are hidden at load (bare shell); installing the matching
 # gameplay part reveals that part's real geometry in place via EventBus.
+# Also handles player entry/exit and driving physics.
 
-# part_id (gameplay) -> model group name prefix(es) whose nodes to reveal.
-# Matching is fuzzy (normalized, prefix-based) so it survives Godot's glTF
-# node-name sanitizing. Toggling a group node hides/shows its whole subtree.
 const PART_TO_GROUPS := {
 	"engine_block": ["E36_coupe_engine_m51"],
 	"gearbox": ["E36_coupe_transmission"],
@@ -31,7 +29,14 @@ const HIDDEN_AT_START := [
 	"E36_lowerarm_F_b",
 ]
 
+const MAX_STEER := 0.45
+const ENGINE_POWER := 2500.0
+const BRAKE_POWER := 30.0
+
 var _nodes: Array[Node3D] = []
+var _is_driven := false
+var _driver: Node = null
+var _drive_camera: Camera3D = null
 
 func _ready() -> void:
 	_gather_nodes(self)
@@ -39,11 +44,58 @@ func _ready() -> void:
 		_set_group_visible(String(key), false)
 	EventBus.part_installed.connect(_on_part_installed)
 	EventBus.part_removed.connect(_on_part_removed)
-	# Re-show any parts already installed (e.g. loaded from a save).
 	for part_id in PART_TO_GROUPS:
 		var pid: String = part_id
 		if GameState.is_slot_filled(pid + "_slot"):
 			_reveal_part(pid, true)
+	# Start parked
+	freeze = true
+	freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+	_drive_camera = get_node_or_null("DriveCamera")
+
+func _physics_process(delta: float) -> void:
+	if not _is_driven:
+		return
+	var throttle := Input.get_axis("move_backward", "move_forward")
+	var steer_input := Input.get_axis("move_right", "move_left") * MAX_STEER
+	steering = move_toward(steering, steer_input, delta * 3.0)
+	# Brake when pressing reverse while rolling forward
+	var going_forward := linear_velocity.dot(-global_transform.basis.z) > 0.5
+	if throttle < 0.0 and going_forward:
+		brake = BRAKE_POWER
+		engine_force = 0.0
+	else:
+		brake = 0.0
+		engine_force = throttle * ENGINE_POWER
+	if Input.is_action_just_pressed("interact"):
+		exit_car()
+
+func enter_car(player: Node) -> void:
+	if _is_driven:
+		return
+	_driver = player
+	_is_driven = true
+	freeze = false
+	player.process_mode = Node.PROCESS_MODE_DISABLED
+	if _drive_camera:
+		_drive_camera.current = true
+
+func exit_car() -> void:
+	if not _is_driven or _driver == null:
+		return
+	# Place player beside driver's door (local -X = left side)
+	var exit_offset := global_transform.basis.x * -1.5 + Vector3(0, 0.5, 0)
+	_driver.global_position = global_position + exit_offset
+	_driver.process_mode = Node.PROCESS_MODE_INHERIT
+	if _drive_camera:
+		_drive_camera.current = false
+	_is_driven = false
+	_driver = null
+	engine_force = 0.0
+	brake = BRAKE_POWER
+	steering = 0.0
+	freeze = true
+	freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
 
 func _gather_nodes(node: Node) -> void:
 	if node is Node3D and node != self:
