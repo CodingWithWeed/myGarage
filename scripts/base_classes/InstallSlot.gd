@@ -7,6 +7,9 @@ class_name InstallSlot
 # When true, the installed part's appearance is the real model mesh (revealed
 # by CarModel via EventBus) rather than the carried physics node snapping in.
 @export var use_model_reveal: bool = false
+# When true the slot begins already filled (e.g. the hood is on the car at the
+# start). The model mesh is already visible, so no install event is emitted.
+@export var starts_filled: bool = false
 
 var is_filled: bool = false
 var installed_part_id: String = ""
@@ -50,6 +53,10 @@ func _ready() -> void:
 	if slot_id == "":
 		slot_id = name
 	_setup_meshes()
+	if starts_filled:
+		is_filled = true
+		installed_part_id = accepted_part_id
+		GameState.set_slot_filled(slot_id, accepted_part_id)
 	update_visuals()
 
 func _setup_meshes() -> void:

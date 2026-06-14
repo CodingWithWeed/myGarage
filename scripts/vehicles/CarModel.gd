@@ -12,6 +12,8 @@ const PART_TO_GROUPS := {
 	"engine_block": ["E36_coupe_engine_m51"],
 	"gearbox": ["E36_coupe_transmission"],
 	"front_subframe": ["E36_subframe_F"],
+	# The whole paint.001 submesh is the hood panel — a removable body part.
+	"hood": ["E36_coupe_bumper_R_trim_BMWE36_paint.001"],
 }
 
 # Group prefixes hidden on load — only the gameplay parts that are installed

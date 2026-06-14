@@ -13,6 +13,7 @@ const PART_TO_GROUP := {
 	"engine_block": "E36_coupe_engine_m51",
 	"gearbox": "E36_coupe_transmission",
 	"front_subframe": "E36_subframe_F",
+	"hood": "E36_coupe_bumper_R_trim_BMWE36_paint.001",
 }
 
 var _source: Node = null

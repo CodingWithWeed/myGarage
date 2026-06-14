@@ -38,3 +38,12 @@ slot_id = "front_subframe_slot"
 accepted_part_id = "front_subframe"
 use_model_reveal = true
 interaction_hint = "Front Subframe Slot"
+
+[node name="hood_slot" type="Node3D" parent="Slots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 1.35)
+script = ExtResource("3_slot")
+slot_id = "hood_slot"
+accepted_part_id = "hood"
+use_model_reveal = true
+starts_filled = true
+interaction_hint = "Hood"
