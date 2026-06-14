@@ -15,7 +15,7 @@ size = Vector3(1.6, 0.55, 2.0)
 script = ExtResource("2_carmodel")
 
 [node name="CarCollision" type="StaticBody3D" parent="."]
-collision_layer = 2
+collision_layer = 1
 
 [node name="BodyShape" type="CollisionShape3D" parent="CarCollision"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.25)
