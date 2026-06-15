@@ -1,0 +1,80 @@
+PART MODEL NAMING CONVENTION
+=============================
+
+Format: part_<part_id>.glb
+
+Drop your Meshy exports here, renamed to match the part IDs below.
+These IDs map directly into the install-slot system.
+
+ENGINE BAY
+  part_engine_block.glb
+  part_cylinder_head.glb
+  part_oil_pan.glb
+  part_valve_cover.glb
+  part_timing_chain.glb
+  part_water_pump.glb
+  part_radiator.glb
+  part_alternator.glb
+  part_battery.glb
+
+DRIVETRAIN
+  part_gearbox.glb
+  part_flywheel.glb
+  part_prop_shaft.glb
+  part_rear_diff.glb
+
+FRONT SUSPENSION (paired — suffix _fl / _fr)
+  part_strut_fl.glb          part_strut_fr.glb
+  part_coil_spring_fl.glb    part_coil_spring_fr.glb
+  part_lower_control_arm_fl.glb   part_lower_control_arm_fr.glb
+  part_wheel_bearing_fl.glb  part_wheel_bearing_fr.glb
+  part_brake_disc_fl.glb     part_brake_disc_fr.glb
+  part_brake_caliper_fl.glb  part_brake_caliper_fr.glb
+
+REAR SUSPENSION (paired — suffix _rl / _rr)
+  part_shock_rl.glb          part_shock_rr.glb
+  part_coil_spring_rl.glb    part_coil_spring_rr.glb
+  part_trailing_arm_rl.glb   part_trailing_arm_rr.glb
+  part_wheel_bearing_rl.glb  part_wheel_bearing_rr.glb
+  part_brake_disc_rl.glb     part_brake_disc_rr.glb
+  part_brake_caliper_rl.glb  part_brake_caliper_rr.glb
+
+SUBFRAMES
+  part_front_subframe.glb
+  part_rear_subframe.glb
+  part_front_anti_roll_bar.glb
+  part_rear_anti_roll_bar.glb
+
+EXHAUST
+  part_exhaust_manifold.glb
+  part_catalytic_converter.glb
+  part_exhaust_mid_pipe.glb
+  part_rear_silencer.glb
+
+BODY PANELS (from Blender — split from main glTF)
+  part_hood.glb
+  part_front_bumper.glb
+  part_rear_bumper.glb
+  part_fender_l.glb          part_fender_r.glb
+  part_door_fl.glb           part_door_fr.glb
+  part_door_rl.glb           part_door_rr.glb
+
+INTERIOR
+  part_dashboard.glb
+  part_seats_front.glb
+  part_steering_wheel.glb
+
+WHEELS (paired)
+  part_wheel_fl.glb          part_wheel_fr.glb
+  part_wheel_rl.glb          part_wheel_rr.glb
+
+NOTES
+-----
+- Export from Blender/Meshy as GLB (binary glTF), not GLTF+bin.
+- Set real-world scale before export (Blender units = metres).
+- Origin point = the part's natural mount point (bolt hole, bracket face, etc).
+- Approximate real dimensions for reference:
+    battery         0.24 x 0.17 x 0.19 m
+    brake disc      0.28 x 0.02 x 0.28 m
+    strut (full)    0.06 x 0.40 x 0.06 m
+    gearbox         0.25 x 0.50 x 0.25 m
